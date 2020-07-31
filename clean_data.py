@@ -6,11 +6,19 @@ import time
 conn = sqlite3.connect('clean_hands.sqlite')
 cur = conn.cursor()
 
-cur.execute('''DROP TABLE IF EXISTS MrWhite ''')
-cur.execute('''DROP TABLE IF EXISTS Gogo ''')
+cur.execute('''DROP TABLE IF EXISTS Bill ''')
 cur.execute('''DROP TABLE IF EXISTS Budd ''')
 cur.execute('''DROP TABLE IF EXISTS Eddie ''')
-cur.execute('''DROP TABLE IF EXISTS Bill ''')
+cur.execute('''DROP TABLE IF EXISTS Gogo ''')
+cur.execute('''DROP TABLE IF EXISTS Hattori ''')
+cur.execute('''DROP TABLE IF EXISTS Joe ''')
+cur.execute('''DROP TABLE IF EXISTS MrBlonde ''')
+cur.execute('''DROP TABLE IF EXISTS MrBlue ''')
+cur.execute('''DROP TABLE IF EXISTS MrBrown ''')
+cur.execute('''DROP TABLE IF EXISTS MrOrange ''')
+cur.execute('''DROP TABLE IF EXISTS MrPink ''')
+cur.execute('''DROP TABLE IF EXISTS MrWhite ''')
+cur.execute('''DROP TABLE IF EXISTS ORen ''')
 cur.execute('''DROP TABLE IF EXISTS Pluribus ''')
 
 cur.execute('''CREATE TABLE IF NOT EXISTS MrWhite
@@ -25,6 +33,23 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Bill
         (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
 cur.execute('''CREATE TABLE IF NOT EXISTS Pluribus
         (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS MrBlue
+        (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS MrBlonde
+        (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS MrPink
+        (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS MrBrown
+        (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS MrOrange
+        (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS Joe
+        (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS Hattori
+        (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+cur.execute('''CREATE TABLE IF NOT EXISTS ORen
+        (id INTEGER UNIQUE, ps_id INTEGER UNIQUE, hand_dealt TEXT)''')
+
 
 conn_1 = sqlite3.connect('raw_hands.sqlite')
 cur_1 = conn_1.cursor()
@@ -39,9 +64,8 @@ except:
     last_id = 0
 
 ids = range(last_id)
-print(ids)
 ps_id = None
-
+list_of_users = list()
 for id in ids:
     cur_1.execute('SELECT id, ps_id, rawhand FROM Hands WHERE id = ?', (id+1,) )
     row = cur_1.fetchone()
@@ -57,20 +81,76 @@ for id in ids:
         line = line.strip('\'')
         line = line.strip()
         line = line.rstrip('\\n')
+
         if not line.startswith('Dealt to '): continue
-
-        if line.startswith('Dealt to Pluribus'):
-            cur.execute('''INSERT OR IGNORE INTO Pluribus (id, ps_id, hand_dealt)
-                VALUES ( ?, ?, ?)''', ( id, ps_id, line))
-        elif line.startswith('Dealt to MrWhite'):
-            cur.execute('''INSERT OR IGNORE INTO MrWhite (id, ps_id, hand_dealt)
-                VALUES ( ?, ?, ?)''', ( id, ps_id, line))
-        elif line.startswith('Dealt to Gogo'):
+        hand_line = line
+        hand_re = re.findall('.*\[(.*)\]',hand_line)
+        hand = hand_re[0]
+        if line.startswith('Dealt to Gogo'):
+        #    print(id, ps_id, line)
             cur.execute('''INSERT OR IGNORE INTO Gogo (id, ps_id, hand_dealt)
-                VALUES ( ?, ?, ?)''', ( id, ps_id, line))
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to Budd'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO Budd (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to Eddie'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO Eddie (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to Bill'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO Bill (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to Pluribus'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO Pluribus (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to MrBlue'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO MrBlue (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to MrBlonde'):
+            #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO MrBlonde (id, ps_id, hand_dealt)
+                    VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to MrPink'):
+            #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO MrPink (id, ps_id, hand_dealt)
+                    VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to MrBrown'):
+            #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO MrBrown (id, ps_id, hand_dealt)
+                    VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif  line.startswith('Dealt to MrOrange'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO MrOrange (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to Joe'):
+    #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO Joe (id, ps_id, hand_dealt)
+            VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
 
+        elif line.startswith('Dealt to Hattori'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO Hattori (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to MrWhite'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO MrWhite (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        elif line.startswith('Dealt to ORen'):
+        #    print(id, ps_id, line)
+            cur.execute('''INSERT OR IGNORE INTO ORen (id, ps_id, hand_dealt)
+                VALUES ( ?, ?, ?)''', ( id, ps_id, hand))
+        else:
+            print(line)
+            line = line.split()
 
+            if line[2] not in list_of_users:
+                list_of_users.append(line[2])
 
+print(list_of_users)
 conn.commit()
 cur.close()
 
