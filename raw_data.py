@@ -90,7 +90,7 @@ for text_file in poker_hand_text_files:
             except:
                 found_ps_id = False
 
-
+        
         if line == '\n' and not found_ps_id:
             first_line_flag += 1
             if first_line_flag > 1:
